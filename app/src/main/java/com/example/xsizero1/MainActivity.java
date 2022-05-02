@@ -29,56 +29,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initViews();
     }
 
-    private void actualizeValuesInVariants(int player, int clickedTag) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (variants[i][j] == clickedTag) {
-                    variants[i][j] = player;
-                }
-            }
-        }
-    }
-
-    private boolean checkAnyPossibleWinnerVariant() {
-        for (int i = 0; i < 8; i++) {
-            if (variants[i][0] == variants[i][1] && variants[i][1] == variants[i][2]) {
-                // Toast.makeText(this, " jucatorul " + player + " castigat", Toast.LENGTH_SHORT).show();
-                somebodyWon = true;
-                newGameBtn.setVisibility(View.VISIBLE);
-                messageTV.setVisibility(View.VISIBLE);
-                if (player == 10) {
-                    messageTV.setText("Jucatorul A a castigat!");
-                } else {
-                    messageTV.setText("Jucatorul B a castigat!");
-                }
-                return true;
-            }
-        }
-        if (!somebodyWon && completedBoxes == 9) {
-            newGameBtn.setVisibility(View.VISIBLE);
-            messageTV.setVisibility(View.VISIBLE);
-            messageTV.setText("Remiza!");
-        }
-        return false;
-    }
-
-    void newGame() {
-        somebodyWon = false;
-        i0.setImageResource(0);
-        i1.setImageResource(0);
-        i2.setImageResource(0);
-        i3.setImageResource(0);
-        i4.setImageResource(0);
-        i5.setImageResource(0);
-        i6.setImageResource(0);
-        i7.setImageResource(0);
-        i8.setImageResource(0);
-        variants = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
-        newGameBtn.setVisibility(View.INVISIBLE);
-        messageTV.setVisibility(View.INVISIBLE);
-        completedBoxes = 0;
-    }
-
     void initViews() {
         messageTV = findViewById(R.id.textView);
         newGameBtn = findViewById(R.id.button);
@@ -105,20 +55,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void clickOnABox(int clickedID) {
-        if (!somebodyWon) {
+        ImageView clickedBox = findViewById(clickedID);
+        int clickedTag = Integer.parseInt(clickedBox.getTag().toString());
+        if (!somebodyWon && !alreadyOccupied(clickedTag)) {
             completedBoxes++;
-            Log.i("boxes = ", completedBoxes + "");
-            ImageView clickedBox = findViewById(clickedID);
-            int tagApasat = Integer.parseInt(clickedBox.getTag().toString());
+            //Log.i("boxes = ", completedBoxes + "");
             if (player == 10) {
                 clickedBox.setImageResource(R.drawable.x_transparent);
             } else {
                 clickedBox.setImageResource(R.drawable.zero_transparent);
             }
-            actualizeValuesInVariants(player, tagApasat);
+            actualizeValuesInVariants(player, clickedTag);
             checkAnyPossibleWinnerVariant();
             player = -player;
         }
+    }
+
+    private void actualizeValuesInVariants(int player, int clickedTag) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (variants[i][j] == clickedTag) {
+                    variants[i][j] = player;
+                }
+            }
+        }
+    }
+
+    private boolean alreadyOccupied(int clickedTag){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (variants[i][j] == clickedTag) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean checkAnyPossibleWinnerVariant() {
+        for (int i = 0; i < 8; i++) {
+            if (variants[i][0] == variants[i][1] && variants[i][1] == variants[i][2]) {
+                // Toast.makeText(this, " jucatorul " + player + " castigat", Toast.LENGTH_SHORT).show();
+                somebodyWon = true;
+                newGameBtn.setVisibility(View.VISIBLE);
+                messageTV.setVisibility(View.VISIBLE);
+                if (player == 10) {
+                    messageTV.setText("Jucatorul A a castigat!");
+                } else {
+                    messageTV.setText("Jucatorul B a castigat!");
+                }
+                return true;
+            }
+        }
+        if (!somebodyWon && completedBoxes == 9) {
+            newGameBtn.setVisibility(View.VISIBLE);
+            messageTV.setVisibility(View.VISIBLE);
+            messageTV.setText("Remiza!");
+        }
+        return false;
     }
 
     @Override
@@ -137,12 +131,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.imageView6:
             case R.id.imageView7:
             case R.id.imageView8:
-                Log.i("clicat pe ", view.getId() + "");
+               // Log.i("clicat pe ", view.getId() + "");
                 clickOnABox(clickedID);
                 break;
             default:
                 return;
         }
+    }
+
+    void newGame() {
+        somebodyWon = false;
+        i0.setImageResource(0);
+        i1.setImageResource(0);
+        i2.setImageResource(0);
+        i3.setImageResource(0);
+        i4.setImageResource(0);
+        i5.setImageResource(0);
+        i6.setImageResource(0);
+        i7.setImageResource(0);
+        i8.setImageResource(0);
+        variants = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
+        newGameBtn.setVisibility(View.INVISIBLE);
+        messageTV.setVisibility(View.INVISIBLE);
+        completedBoxes = 0;
     }
 
 }
